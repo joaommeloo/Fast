@@ -71,9 +71,11 @@ def criar_grafico_mes(mes):
     for i, v in enumerate(contagem_nomes_mes):
         ax.text(i, v + 1, str(v), ha='center', va='bottom')
 
-        # Defina rótulos dos eixos
+    # Defina rótulos dos eixos
     plt.xlabel('ANSLOGIN')
     plt.ylabel('Contagem')
+    plt.xlim(-0.5, len(contagem_nomes_mes) - 0.5)  # Ajuste os valores para os limites do eixo X
+    plt.ylim(0, max(contagem_nomes_mes) + 5)  # Ajuste os valores para os limites do eixo Y
 
         # Exiba o gráfico
     plt.show()
@@ -82,3 +84,28 @@ def criar_grafico_mes(mes):
 meses = list(range(1, 13))  # De janeiro a dezembro
 interact(criar_grafico_mes, mes=widgets.Dropdown(options=meses, description='Mês:'))
 
+________________________________________________________________________________________________________________________________________________________________________________________________________________
+
+#Para criar o grafico HTML 
+
+import pandas as pd
+import plotly.express as px
+import ipywidgets as widgets
+from ipywidgets import interact
+from IPython.display import display
+
+def criar_grafico_interativo(meses_selecionados):
+    dados_filtrados_meses = dados_filtrados[dados_filtrados['SEGSTART'].dt.month.isin(meses_selecionados)]
+    contagem_nomes_meses = dados_filtrados_meses['ANSLOGIN'].value_counts()
+    
+    
+    fig = px.bar(contagem_nomes_meses, x=contagem_nomes_meses.index, y=contagem_nomes_meses.values,
+                 labels={'x': 'ANSLOGIN', 'y': 'Contagem'},
+                 title=f'Contagem de ANSLOGIN para os meses selecionados')
+    
+  
+    fig.show()
+
+meses = list(range(1, 13))  # De janeiro a dezembro
+meses_selecionados = widgets.SelectMultiple(options=meses, description='Meses:')
+interact(criar_grafico_interativo, meses_selecionados=meses_selecionados)
