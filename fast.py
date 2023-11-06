@@ -109,3 +109,25 @@ def criar_grafico_interativo(meses_selecionados):
 meses = list(range(1, 13))  # De janeiro a dezembro
 meses_selecionados = widgets.SelectMultiple(options=meses, description='Meses:')
 interact(criar_grafico_interativo, meses_selecionados=meses_selecionados)
+
+
+-----------------------------------------------------------------------------------------------------------------------------
+caminho_excel = r'C:\Users\joao.mmelo\Downloads\Listagem de usuários Avaya.xlsx'
+
+dados_excel = pd.read_excel(caminho_excel)
+
+duplicatas = dados_excel[dados_excel.duplicated(subset=['Nome'], keep=False)]
+
+valores_a_remover = ["SEGURADORA", "GESTAO DE REDE", "SINISTROS", "QUALIDADE"]
+
+duplicatas = dados_excel[~dados_excel['Nome'].isin(valores_a_remover)]
+
+dados_filtrados = duplicatas[~duplicatas['Nome'].isin(valores_a_remover)]
+
+dados_filtrados = dados_filtrados.sort_values(by='Nome')
+
+caminho_excel_saida = r'C:\Users\joao.mmelo\Downloads\Duplicatas_Nome.xlsx'
+
+dados_filtrados.to_excel(caminho_excel_saida, index=False)
+
+print(f'Linhas duplicadas exportadas para {caminho_excel_saida}')
