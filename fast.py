@@ -131,3 +131,31 @@ caminho_excel_saida = r'C:\Users\joao.mmelo\Downloads\Duplicatas_Nome.xlsx'
 dados_filtrados.to_excel(caminho_excel_saida, index=False)
 
 print(f'Linhas duplicadas exportadas para {caminho_excel_saida}')
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+import pandas as pd
+
+caminho_excel = r'C:\Users\joao.mmelo\Downloads\jeSS.xlsx'
+
+dados_excel = pd.read_excel(caminho_excel)
+
+dados_split = dados_excel['ANSLOGIN'].str.split('-', n=1, expand=True)
+
+dados_excel['Agente'] = dados_split[0]
+dados_excel['Login'] = dados_split[1]
+
+dados_excel = dados_excel.drop(columns=['ANSLOGIN'])
+
+dados_excel['DURATION_em_segundos'] = dados_excel['DURATION'].apply(lambda x: x.second + x.minute * 60 + x.hour * 3600)
+
+
+dados_filtrados = dados_excel[(dados_excel['DURATION_em_segundos'] <= 12) & (dados_excel['AGT_RELEASED'] == 1)]
+
+
+dados_filtrados = dados_filtrados.drop(columns=['DURATION_em_segundos'])
+
+contagem_login = dados_filtrados['Login'].value_counts()
+
+display(dados_filtrados)
